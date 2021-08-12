@@ -1,0 +1,126 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 100800 - это правила для обнаружения подозрительных процессов и сервисов
+    Правила предварительно будут располагаться в диапазоне 100801..100899 
+-->
+
+<group name="windows, windows_securit, process_access, test, needs">
+    <rule id="100801" level="8">
+        <info type="text">Detects suspect access to svchost process memory such as that used by Invoke-Phantom to kill the winRM windows event logging service.</info>
+        <field name="win.eventdata.targetimage">\\windows\\system32\\svchost.exe$</field>
+        <field name="win.eventdata.grantedaccess">0x1f3fff</field>
+        <field name="win.eventdata.calltrace">*unknown*</field>
+        <description>Suspect Svchost Memory Asccess</description>
+        <mitre>
+            <id>T1562.002</id>
+            <id>T1089</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_access/sysmon_invoke_phantom.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100802" level="8">
+        <info type="text">Detects various indicators of Microsoft Connection Manager Profile Installer execution</info>
+        <field name="win.eventdata.calltrace">*cmlua.dll*</field>
+        <description>CMSTP Execution Process Access</description>
+        <mitre>
+            <id>T1218.003</id>
+            <id>T1191</id>
+            <id>T1559.001</id>
+            <id>T1175</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_access/sysmon_cmstp_execution.yml</info>
+        <group>attack.execution, attack.defense_evasion, car.2019-04-001</group>
+    </rule>
+
+    <rule id="100803" level="12">
+        <info type="text">Detects the access to processes by other suspicious processes which have reflectively loaded libraries in their memory space.</info>
+        <field name="win.eventdata.calltrace">C:\\Windows\\SYSTEM32\\ntdll.dll+*|C:\\Windows\\System32\\KERNELBASE.dll+*|UNKNOWN(*)|</field>
+        <field name="win.eventdata.calltrace">*UNKNOWN(*)|UNKNOWN(*)</field>
+        <field name="win.eventdata.grantedaccess">0x1F0FFF|0x1F1FFF|0x143A|0x1410|0x1010|0x1F2FFF|0x1F3FFF|0x1FFFFF</field>
+        <description>Suspicious In-Memory Module Execution</description>
+        <mitre>
+            <id>T1055.001</id>
+            <id>T1055.002</id>
+            <id>T1055</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_access/sysmon_in_memory_assembly_execution.yml</info>
+        <group>attack.privilege_escalation, attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100804" level="12">
+        <info type="text">Detects LSASS process access by LaZagne for credential dumping.</info>
+        <field name="win.eventdata.targetimage">*\\lsass.exe$</field>
+        <field name="win.eventdata.calltrace">C:\\Windows\\SYSTEM32\\ntdll.dll+*|C:\\Windows\\System32\\KERNELBASE.dll+*_ctypes.pyd+*python27.dll+*</field>
+        <field name="win.eventdata.grantedaccess">0x1FFFFF</field>
+        <description>Credential Dumping by LaZagne</description>
+        <mitre>
+            <id>T1003.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_access/sysmon_lazagne_cred_dump_lsass_access.yml</info>
+        <group>attack.credential_access</group>
+    </rule>	
+
+    <rule id="100805" level="8">
+        <info type="text">Detects process LSASS memory dump using procdump or taskmgr based on the CallTrace pointing to dbghelp.dll or dbgcore.dll for win10</info>
+        <field name="win.eventdata.targetimage">C:\\windows\\system32\\lsass.exe</field>
+        <field name="win.eventdata.grantedaccess">0x1FFFFF</field>
+        <field name="win.eventdata.calltrace">*dbghelp.dll*|*dbgcore.dll*</field>
+        <description>LSASS Memory Dump</description>
+        <mitre>
+            <id>T1003.001</id>
+            <id>T1003</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_access/sysmon_lsass_memdump.yml</info>
+        <group>attack.credential_access, attack.s0002</group>
+    </rule>
+
+    <rule id="100806" level="8">
+        <info type="text">Detects a process access to verclsid.exe that injects shellcode from a Microsoft Office application / VBA macros</info>
+        <field name="win.eventdata.targetimage">*\\verclsid.exe</field>
+        <field name="win.eventdata.grantedaccess">0x1FFFFF</field>
+        <field name="win.eventdata.calltrace">*UNKNOWN(*VBE7.DLL*)</field>
+        <description>Malware Shellcode in Verclsid Target Process</description>
+        <mitre>
+            <id>T1055</id>
+        </mitre>
+        <info type="link"></info>
+        <group>attack.defense_evasion, attack.privilege_escalation</group>
+    </rule>
+    
+    <rule id="100807" level="8">
+        <info type="text">Detects a process access to verclsid.exe that injects shellcode from a Microsoft Office application / VBA macros</info>
+        <field name="win.eventdata.targetimage">*\\verclsid.exe</field>
+        <field name="win.eventdata.grantedaccess">0x1FFFFF</field>
+        <field name="win.eventdata.sourceimage">*\\Microsoft Office\\*</field>
+        <field name="win.eventdata.calltrace">*UNKNOWN*</field>
+        <description>Malware Shellcode in Verclsid Target Process</description>
+        <mitre>
+            <id>T1055</id>
+        </mitre>
+        <info type="link"></info>
+        <group>attack.defense_evasion, attack.privilege_escalation</group>
+    </rule>
+
+    <rule id="100808" level="8">
+        <info type="text">Detects usage of mimikatz through WinRM protocol by monitoring access to lsass process by wsmprovhost.exe.</info>
+        <field name="win.eventdata.targetimage">C:\\windows\\system32\\lsass.exe</field>
+        <field name="win.eventdata.sourceimage">C:\\Windows\\system32\\wsmprovhost.exe</field>
+        <description>Mimikatz through Windows Remote Management</description>
+        <mitre>
+            <id>T1003.001</id>
+            <id>T1003</id>
+            <id>T1059.001</id>
+            <id>T1086</id>
+            <id>T1021.006</id>
+            <id>T1028</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_access/sysmon_mimikatz_trough_winrm.yml</info>
+        <group>attack.execution, attack.credential_access</group>
+    </rule>
+</group>

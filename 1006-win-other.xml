@@ -1,0 +1,98 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 100900 - это правила для обнаружения подозрительных процессов и сервисов
+    Правила предварительно будут располагаться в диапазоне 100900..100999 
+-->
+
+<group name="windows, windows_securit, other, test, needs">
+    <rule id="100900" level="6">
+        <info type="text">Detects scenarios where an windows defender exclusion was added in registry</info>
+        <info type="text">where an entity would want to bypass antivirus scanning from windows defender</info>
+        <field name="win.system.eventID">4657, 4656, 4660, 4663</field>
+        <field name="win.eventdata.objectname">*\\Microsoft\\Windows Defender\\Exclusions*</field>
+        <description>asdasd</description>
+        <mitre>
+            <id>T1089</id>
+            <id>TT1562.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_defender_bypass.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100901" level="6">
+        <info type="text">Detects disabling Windows Defender threat protection</info>
+        <field name="win.system.eventID">5001, 5010, 5012, 5101</field>
+        <field name="win.eventdata.TargetObject">HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\WinDefend|</field>
+        <field name="win.eventdata.TargetObject">HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Defender|</field>
+        <field name="win.eventdata.TargetObject">HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows Defender</field>
+        <field name="win.eventdata.Details">DWORD (0x00000001)</field>
+        <description>Windows Defender Threat Detection Disabled</description>
+        <mitre>
+            <id>T1089</id>
+            <id>T1562.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_defender_disabled.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100902" level="3">
+        <info type="text">Detects Windows Pcap driver installation based on a list of associated .sys files.</info>
+        <field name="win.system.eventID">4697</field>
+        <field name="win.eventdata.servicefilename">*pcap*|*npcap*|*npf*|*nm3*|*ndiscap*|</field>
+        <field name="win.eventdata.servicefilename">*nmnt*|*windivert*|*USBPcap*|*pktmon*</field>
+        <description>Windows Pcap Drivers</description>
+        <mitre>
+            <id>T1040</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_pcap_drivers.yml</info>
+        <group>attack.discovery, attack.credential_access</group>
+    </rule>
+
+    <rule id="100903" level="12">
+        <info type="text">This rule is designed to detect attempts to exploit Zerologon (CVE-2020-1472) vulnerability</info>
+        <info type="text">using mimikatz zerologon module or other exploits from machine with "kali" hostname.</info>
+        <field name="win.system.eventID">5805, 5723</field>
+        <field name="win.system.message">*kali*|*mimikatz*</field>
+        <description>Zerologon Exploitation Using Well-known Tools</description>
+        <mitre>
+            <id>T1210</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_possible_zerologon_exploitation_using_wellknown_tools.yml</info>
+        <group>attack.lateral_movement</group>
+    </rule>
+
+    <rule id="100904" level="3">
+        <info type="text">Detects PsExec service installation and execution events (service and Sysmon)</info>
+        <field name="win.system.eventID">7045, 7036</field>
+        <field name="win.eventdata.servicename">PSEXESVC</field>
+        <field name="win.eventname.servicefilename">\\PSEXESVC.exe$</field>
+        <description>PsExec Tool Execution</description>
+        <mitre>
+            <id>T1035</id>
+            <id>T1569.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_tool_psexec.yml</info>
+        <group>attack.execution, attack.s0029</group>
+    </rule>
+
+    <rule id="100905" level="6">
+        <info type="text">Detects suspicious WMI event filter and command line event consumer based on WMI and Security Logs.</info>
+        <field name="win.system.eventID">5861, 5859, 4662</field>
+        <field name="win.system.message">*ActiveScriptEventConsumer*|*CommandLineEventConsumer*|*CommandLineTemplate*</field>
+        <field name="win.eventdata.objectype">WMI Namespace</field>
+        <field name="win.eventdata.objectname">*subscription*</field>
+        <description>WMI Persistence</description>
+        <mitre>
+            <id>T1084</id>
+            <id>T1546.003</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_wmi_persistence.yml</info>
+        <group>attack.persistence, attack.privilege_escalation</group>
+    </rule>
+
+</group>

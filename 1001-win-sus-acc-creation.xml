@@ -1,0 +1,92 @@
+<!--
+  -  Microsoft Windows User Creation rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!--
+   Rule family tree / Генеалогическое древо:
+   
+   60000 Group of windows rules 
+   60001 Group of Windows rules for the Security channel
+   60103 Windows audit success event
+   100300 User creation group (custom) 
+-->
+
+<!-- 
+    ID 100300 - правила для обнаружения подозрительного создания пользователя.
+    Правила предварительно будут располагаться в диапазоне 100300..100399
+-->
+
+<group name="windows, windows_security, account_creation, test, needs">
+
+    <rule id="100300" level="3">
+
+        <if_sid>60103</if_sid> <!-- Audit Success -->
+        <field name="win.system.eventID">4720</field>
+        <description>New Account Creation</description>
+
+    </rule>
+
+    <rule id="100301" level="9">
+
+        <if_sid>100300</if_sid>
+        <match>ANONYMOUS|LOGON</match>
+        <!--field name="win.eventdata.SamAccountName">ANONYMOUS|LOGON</field-->
+        <description>Suspicious Account Creation</description>
+
+        <mitre>
+            <id>T1136</id>
+            <id>T1136.101</id>
+        </mitre>
+
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/builtin/win_susp_local_anon_logon_created.yml</info>
+        <group>attack.persistence, </group>
+    </rule>
+
+    <rule id="100302" level="10">
+
+        <if_sid>100300</if_sid>
+        <field name="win.eventdata.TargetUserName">$\$</field>
+        <description>Hidden Local User Creation</description>
+
+        <mitre>
+            <id>T11360.001</id>
+        </mitre>
+
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hidden_user_creation.yml</info>
+        <group>attack.persistence</group>
+    </rule>
+
+    <rule id="100303" level="8">
+
+        <info type="text">Detects possible bypass EDR and SIEM via abnormal user account name.</info>
+
+        <field name="win.system.eventID">4781</field>
+        <field name="win.eventdata.SamAccountName">$\$</field>
+
+        <description>Renamed User Account with '$' in Attribute 'SamAccountName'.</description>  
+
+        <mitre>
+            <id>T1039</id>
+        </mitre>
+        
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/builtin/win_new_or_renamed_user_account_with_dollar_sign.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100304" level="3">
+        <info type="text">This rule triggers on user accounts that are added to the local Administrators group,</info>
+        <info type="text">which could be legitimate activity or a sign of privilege escalation activity</info>
+        <field name="win.system.eventID">4732</field>
+        <field name="win.eventdata.groupname">Administrators</field>
+        <field name="win.eventdata.subjectusername">*$</field>
+        <description>User Added to Local Administrators</description>
+        <mitre>
+            <id>T1078</id>
+        </mitre>
+        <info type="link">https://github.com/P4T12ICK/Sigma-Rule-Repository/blob/master/detection-rules/T1078/win_user_added_to_local_administration.md</info>
+        <group>attack.privilege_escalation</group>
+    </rule>
+
+</group>

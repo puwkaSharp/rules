@@ -1,0 +1,113 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 100700 - это правила для обнаружения подозрительных процессов и сервисов
+    Правила предварительно будут располагаться в диапазоне 100700..100799 
+-->
+<group name="windows, windows_security, logging, test, needs">
+    <rule id="100700" level="3">
+        <field name="win.system.eventID">4719</field>
+        <description>System audit policy was changed.</description>
+        <!--options>no_full_log</options-->
+    </rule>
+    <!-- Detecs account added to or removed from any group assigned administrative privileges-->
+
+    <rule id="100701" level="7">
+        <if_sid>100700</if_sid>
+        <info type="text">Detects scenarios where system auditing (ie: windows event log auditing) is disabled successfully.</info>
+        <field name="win.eventdata.auditpolicychanges">%%8448</field>
+        <description>Disabling Windows Event Auditing Successed</description>
+        <mitre>
+            <id>T1054</id>
+            <id>T1562.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_disable_event_logging.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100702" level="5">
+        <if_sid>100700</if_sid>
+        <info type="text">Detects scenarios where system auditing (ie: windows event log auditing) is disabled unsuccessfully.</info>
+        <field name="win.eventdata.auditpolicychanges">%%8450</field>
+        <description>Disabling Windows Event Auditing Failed</description>
+        <mitre>
+            <id>T1054</id>
+            <id>T1562.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_disable_event_logging.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+    <!-- Security Group Management-->
+    <!-- https://github.com/SigmaHQ/sigma/blob/master/rules/compliance/group_modification_logging.yml-->
+    <rule id="100715" level="3">
+        <field name="win.system.eventID">4727</field>
+        <description>A security-enabled global group was created.</description>
+    </rule>
+    <rule id="100703" level="3">
+        <field name="win.system.eventID">4728</field>
+        <description>A member was added to a security-enabled global group.</description>
+    </rule>
+    <rule id="100704" level="3">
+        <field name="win.system.eventID">4729</field>
+        <description>A member was removed from a security-enabled global group.</description>
+    </rule>
+    <rule id="100705" level="3">
+        <field name="win.system.eventID">4730</field>
+        <description>A security-enabled global group was deleted.</description>
+    </rule>
+    <rule id="100706" level="3">
+        <field name="win.system.eventID">4731</field>
+        <description>A security-enabled local group was created.</description>
+    </rule>
+    <rule id="100707" level="3">
+        <field name="win.system.eventID">4732</field>
+        <description>A member was added to a security-enabled local group.</description>
+    </rule>
+    <rule id="100708" level="3">
+        <field name="win.system.eventID">4733</field>
+        <description>A member was removed from a security-enabled local group.</description>
+    </rule>
+    <rule id="100709" level="3">
+        <field name="win.system.eventID">4734</field>
+        <description>A security-enabled local group was deleted.</description>
+    </rule>
+    <rule id="100710" level="3">
+        <field name="win.system.eventID">4735</field>
+        <description>A security-enabled local group was changed.</description>
+    </rule>
+    <rule id="100711" level="3">
+        <field name="win.system.eventID">4737</field>
+        <description>A security-enabled global group was changed.</description>
+    </rule>
+    <!--Account Management-->
+    <rule id="100712" level="3">
+        <field name="win.system.eventID">632</field>
+        <description>Security Enabled Global Group Member Added.</description>
+    </rule>
+    <rule id="100713" level="3">
+        <field name="win.system.eventID">633</field>
+        <description>Security Enabled Global Group Member Removed.</description>
+    </rule>
+    <rule id="100714" level="3">
+        <field name="win.system.eventID">634</field>
+        <description>Security Enabled Global Group Deleted</description>
+    </rule>
+
+    <rule id="100716" level="5">
+        <info type="text">One of the Windows Eventlogs has been cleared. e.g. caused by "wevtutil cl" command execution</info>
+        <field name="win.system.eventID">1102, 517, 104</field>
+        <field name="win.eventdata.source">Microsoft-Windows-Eventlog</field>
+        <description>Eventlog Cleared</description>
+        <mitre>
+            <id>T1070</id>
+            <id>T1070.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/builtin/win_susp_eventlog_cleared.yml</info>
+        <group>attack.defense_evasion, car.2016-04-002</group>
+    </rule>
+
+</group>

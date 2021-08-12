@@ -1,0 +1,137 @@
+<!-- Andrew. -->
+<!-- Перезаписываю два правила сисмон 11, для того чтобы добавить полезную нам группу win_event_file_creation. -->
+<group name="windows,sysmon,"> 
+  <rule id="61613" level="1" overwrite="yes">
+    <if_sid>61600</if_sid>
+    <field name="win.system.eventID">^11$</field>
+    <description>Sysmon - Event 11: FileCreate by $(win.eventdata.sourceImage)</description>
+    <group>sysmon_event_11,win_event_file_creation,</group>
+  </rule>
+</group>
+
+<group name="sysmon,">
+  <rule id="185009" level="1" overwrite="yes">
+    <if_sid>18100</if_sid>
+    <match>Microsoft-Windows-Sysmon/Operational: INFORMATION(11)</match>
+    <description>Sysmon - Event 11</description>
+    <group>sysmon_event_11,win_event_file_creation,</group>
+  </rule>
+</group>
+
+<!-- id 100500 свободно -->
+
+<group name="windows,sysmon_event_11,win_event_file_creation,"> <!-- я думаю так можно дальше и использовать эту группу -->
+  
+  <!-- Анвар залез сюда чтобы вкинуть правило 083 -->
+  <rule id="100601" level="14">
+   <if_group>win_event_file_creation</if_group>
+   <field name="win.eventdata.targetFilename">\\Microsoft\\Word\\Startup</field>
+   <field name="win.eventdata.targetFilename">.wll$</field>
+   <description>Microsoft Office Word Add-In Loading</description>
+   <info type="text">Detects add-ins that load when Microsoft Word starts. </info>
+   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+   <mitre>
+     <id>T1137</id> <!-- an old one -->
+     <id>T1137.006</id>
+   </mitre>
+   <group>attack.persistence, metron, win083,</group>
+  </rule>
+  
+  <rule id="100602" level="14">
+   <if_group>win_event_file_creation</if_group>
+   <field name="win.eventdata.targetFilename">\\Microsoft\\Excel\\Startup</field>
+   <field name="win.eventdata.targetFilename">.xll$</field>
+   <description>Microsoft Office Excel Add-In Loading</description>
+   <info type="text">Detects add-ins that load when Microsoft Excel starts. </info>
+   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+   <mitre>
+     <id>T1137</id> <!-- an old one -->
+     <id>T1137.006</id>
+   </mitre>
+   <group>attack.persistence, metron, win083,</group>
+  </rule>
+  
+  <rule id="100603" level="14">
+   <if_group>win_event_file_creation</if_group>
+   <field name="win.eventdata.targetFilename">\\Microsoft\\Addins</field>
+   <field name="win.eventdata.targetFilename">.xlam$|.xla$</field>
+   <description>Microsoft Office Add-In Loading</description>
+   <info type="text">Detects add-ins that load when Microsoft Word or Excel starts. </info>
+   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+   <mitre>
+     <id>T1137</id> <!-- an old one -->
+     <id>T1137.006</id>
+   </mitre>
+   <group>attack.persistence, metron, win083,</group>
+  </rule>
+  <!-- Всё уже ушёл -->
+
+<!--_________________________1¶1______________________ кыш, это мое болото
+    _________________________¶¶¶______________________
+    _____________1¶¶111¶¶¶1_¶¶¶_______________________
+    ____________1¶11111¶¶¶¶1¶_________________________
+    ____________¶¶¶¶¶1¶¶¶¶1111________________________
+    ______¶¶¶1_1¶¶¶¶¶1111111111_______________________
+    ______¶¶¶¶¶¶¶¶¶111111111¶¶11______________________
+    ___________1¶11¶¶¶¶¶1111¶1111_____________________
+    ___________1¶¶¶¶¶¶11111¶11111¶¶¶111¶¶_____________
+    ________1¶11¶¶¶¶¶¶¶¶¶111111111_1¶¶¶¶¶1_11_________
+    ________¶¶¶¶¶¶¶¶¶¶¶11¶¶11111111¶¶¶¶¶¶11__11_______
+    ______1¶¶¶¶¶¶¶¶¶¶¶¶¶¶111111111¶¶¶¶¶¶¶11111111_____
+    _____¶1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1111¶¶¶¶¶¶¶¶111111111____
+    ____¶¶1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1111¶¶¶¶¶¶¶¶¶¶¶¶1¶¶111111__
+    ___¶¶¶¶¶¶¶¶¶¶¶¶¶¶111111¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1¶¶111111_
+    __¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1111111
+    _1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶11¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1¶¶¶¶¶11111
+    1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1111111¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1_¶¶¶111111
+    1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶1111111111111111111111¶11¶¶1111111
+    ¶¶¶¶¶¶¶¶11¶¶¶¶111111111111_111111111111_1¶¶1111111
+    ¶¶¶¶¶¶¶¶11¶¶111111111111111111111_111111¶¶11111111
+    1¶¶¶¶¶¶¶¶¶¶11111111111111111111111111111¶¶111111¶_
+    _¶¶¶¶¶¶¶¶¶¶¶¶11111111111111111111111111¶¶¶¶1111¶1_
+    __¶¶¶¶¶¶¶¶¶¶¶¶1111111111111111111111111¶¶¶¶¶¶¶¶¶__
+    ___¶¶¶¶¶¶¶¶¶¶¶¶¶111111111111111111111¶¶¶¶11111¶1__
+    ____1¶¶¶¶¶¶¶¶¶¶¶¶11111111111111111¶¶¶¶1¶¶¶¶¶¶¶¶¶__
+    ______1¶¶¶¶¶¶¶¶¶¶¶111111111111¶¶¶¶¶1111¶¶¶¶¶¶¶¶¶__
+    ________¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶11111111_1________
+    _________1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶111111111111__________
+    _________¶¶¶¶¶¶¶¶111111111111111111111¶¶__________
+    _________¶¶111¶¶¶¶11111111111111111111¶¶__________
+    _________1¶¶¶1111¶¶¶¶¶¶¶¶¶¶1111111¶¶¶¶____________
+    _________1¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶_____________
+    __________¶¶¶¶¶¶¶1__111111__¶¶¶¶¶¶¶¶1_____________
+    __________¶¶¶¶¶¶¶¶__________1¶¶¶¶¶¶¶¶_____________
+    __________¶¶¶¶¶¶¶¶__________¶¶¶¶¶¶¶¶¶_____________
+    __________1¶¶¶¶¶¶¶__________¶¶¶¶¶¶¶¶¶_____________
+    ___________¶¶¶¶¶¶¶__________1¶¶¶¶¶¶¶¶_____________
+    ___________1¶¶¶¶¶____________1¶¶¶¶¶¶______________
+    __________¶¶¶¶¶¶¶1____________¶¶¶¶¶¶¶¶____________
+    _________1¶¶¶¶¶¶¶1___________1¶¶¶¶¶¶¶¶____________
+    ________¶¶¶¶¶¶¶¶¶¶____________1¶¶¶¶¶¶¶____________
+    _____¶¶¶¶¶¶¶¶¶¶¶¶¶____________1¶¶¶¶¶¶¶1___________ -->
+    
+  <rule id="100604" level="2">
+    <if_group>win_event_file_creation</if_group>
+    <field name="win.eventdata.targetFilename">\\lsass\.\.\.\.\..dmp$</field>
+    <description>Sysmon - Event 11: FileCreate by $(data.win.eventdata.image)</description>
+    <info type="text">Detects the use of CreateMiniDump hack tool used to dump the LSASS process memory for credential extraction on the attacker's machine. </info>
+	<info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
+		<mitre>
+     <id>T1003.001</id>
+   </mitre>
+    <group>attack.credential_access, metron, win009.1,</group>
+  </rule>
+
+  <rule id="100605" level="14">
+    <if_group>win_event_file_creation</if_group>
+    <field name="win.eventdata.targetFilename">\\AppData\\Local\\Microsoft\\Cache134.dat$|\\AppData\\Local\\Microsoft\\ExplorerSync.db$</field>
+    <description>Detects Octopus Scanner Malware by $(data.win.eventdata.image)</description>
+	<info type="text">Supply Chain Compromise: Compromise Software Dependencies and Development Tools. </info>
+	<info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_octopus_scanner.yml</info>
+	<mitre>
+     <id>T1195.001</id>
+   </mitre>
+    <group>attack.Initial_Access, metron, win037,</group>
+  </rule>
+  
+</group>

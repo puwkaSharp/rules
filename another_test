@@ -1,0 +1,27 @@
+<!-- Grigorev-->
+<!-- Example of log to be ruled-->
+
+
+<group name="test,">
+    <rule id="123456" level="10">
+        <field name="data.win.system.eventID">4698</field>
+        <match>\"eventID\":\"4698\"</match>
+        <description>A scheduled task was created on $(data.win.system.computer)</description>
+        <!-- 
+        <description>A scheduled task was created on $(_source.winlog.computer_name)</description>
+        <field name="_source.event.code">4698</field>
+        -->
+        <mitre>
+            <id>T1053.005</id>
+        </mitre>
+    </rule>
+</group>
+<group name="test">
+    <rule id="32165" level="2">
+        <field name="data.win.system.eventID">"4648"</field>
+        <description>A logon was attempted using explicit credentials on $(data.win.system.computer).</description>
+        <mitre>
+            <id></id>
+        </mitre>
+    </rule>
+</group>

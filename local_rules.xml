@@ -1,0 +1,26 @@
+<!-- Файл для тестовых правил -->
+
+<!-- Тестовое правило для сисмона на powershell скрипт -->
+<group name="sysmon,"> 
+  <rule id="255000" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="sysmon.image">\\powershell.exe||\\.ps1||\\.ps2</field>
+    <description>Sysmon - Event 1: Bad exe: $(sysmon.image)</description>
+    <group>sysmon_event1,powershell_execution,</group>
+  </rule>
+</group>
+
+
+
+<!-- Вынес process creation в отдельный файл  
+<group name="test,">
+  <rule id="110000" level="12">
+    <field name="data.win.system.eventID">4688</field>
+    <description>WINDOWS EVEN PROCESS CREATION</description>
+    <group>WIN_EV_PROCESS_CREATION,</group>
+  </rule>
+</group> 
+-->
+
+
+

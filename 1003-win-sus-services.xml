@@ -1,0 +1,92 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 100500 - это правила для обнаружения подозрительных процессов и сервисов
+    Правила предварительно будут располагаться в диапазоне 100500..100599 
+-->
+
+<group name="windows, windows_securit, suspicious_services, test, needs">
+    <rule id="100500" level="8">
+
+        <info type="text">This method detects a service install of the malicious Microsoft Network Realtime Inspection Service service described in StoneDrill report by Kaspersky</info>
+
+        <field name="win.system.eventID">7045</field>
+        <match>"ServiceName":"NtsSrv"</match>
+
+        <description>StoneDrill Service Install</description>
+
+        <mitre>
+            <id>T1050</id>
+            <id>T1543.003</id>
+        </mitre>
+
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_apt_stonedrill.yml</info>
+        <group>attack.persistence, 100attack.g0064</group>
+    </rule>
+
+    <rule id="100501" level="12">
+
+        <info type="text">This method detects malicious services mentioned in Turla PNG dropper report by NCC Group in November 2018</info>
+
+        <field name="win.system.eventID">7045</field>
+        <match>"ServiceName":"WerFaultSvc"</match>
+
+        <description>Turla PNG Dropper Service</description>
+
+        <mitre>
+            <id>T1050</id>
+            <id>T1543.003</id>
+        </mitre>
+
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_apt_turla_service_png.yml</info>
+        <group>attack.persistence, attack.persistence</group>
+    </rule>
+
+    <rule id="100502" level="12">
+
+        <info type="text">Detects the use of smbexec.py tool by detecting a specific service installation</info>
+
+        <field name="win.system.eventID">7045</field>
+        <match>"ServiceName":"BTOBTO"</match>
+        <match>execute.bat</match>
+
+        <description>smbexec.py Service Installation</description>
+
+        <mitre>
+            <id>T1077</id>
+            <id>T1021.002</id>
+            <id>T1035</id>
+            <id>T1569.002</id>
+        </mitre>
+s
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hack_smbexec.yml</info>
+        <group>attack.lateral_movement, attack.execution</group>
+    </rule>
+
+    <rule id="100503" level="7">
+
+        <info type="text">Rule to detect the Hybrid Connection Manager service installation.</info>
+
+        <field name="win.system.EventID">4697</field>
+        <match>"ServiceName":"HybridConnectionManager"</match>
+        <!--field name="win.eventdata.servicename">HybridConnectionManager</field-->
+
+        <description>HybridConnectionManager Service Installation</description>
+
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hybridconnectionmgr_svc_installation.yml</info>
+        <group>attack.persistence</group>>
+    </rule>
+
+    <rule id="100504" level="7">
+        <info type="text">Rule to detect the Hybrid Connection Manager service running on an endpoint.</info>
+        <field name="win.system.EventID">40300, 40301, 40302</field>
+        <field name="win.system.message">*HybridConnection*|*sb://*|*servicebus.windows.net*|*ybridConnectionManage*</field>
+        <description>HybridConnectionManager Service Running</description>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hybridconnectionmgr_svc_running.yml</info>
+        <group>attack.persistence</group>
+    </rule>
+</group>

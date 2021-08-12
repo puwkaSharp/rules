@@ -1,0 +1,8 @@
+<!-- Puwka -->
+
+<group name="puwka,">
+    <rule id="999987" level="12">
+        <field name="win.eventdata.parentImage">Hello Test</field>
+        <description>Hello Test</description>
+    </rule>
+</group>
