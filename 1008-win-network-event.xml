@@ -1,0 +1,31 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 101100 - это правила для обнаружения подозрительных изменений в реестре
+    Правила предварительно будут располагаться в диапазоне 101100..101199 
+-->
+
+<group name="windows,windows_security,registry">
+
+    <rule id="101100" level="14">
+        <if_group>sysmon_event3</if_group>
+        <field name="win.eventdata.destinationHostname">(ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.testing)|(ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.test)|(ifferfsodp9ifjaposdfjhgosurijfaewrwergwea.com)|(ayylmaotjhsstasdfasdfasdfasdfasdfasdfasdf.com)|(iuqssfsodp9ifjaposdfjhgosurijfaewrwergwea.com)</field>
+        <description>Wannacry Killswitch Domain $(win.eventdata.destinationHostname)</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1071</id> 
+            <id>T1071.001</id> 
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/network/net_wannacry_killswitch_domain.yml</info>
+        <info type="text">Detects wannacry killswitch domain dns queries </info>
+        <options>no_full_log</options>
+        <group>attack.command_and_control, ransomware, needs, metron, win042</group>
+    </rule>
+
+
+
+</group>

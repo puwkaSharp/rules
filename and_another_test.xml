@@ -1,8 +1,44 @@
 <!-- Puwka -->
 
-<group name="puwka,">
-    <rule id="999987" level="12">
-        <field name="win.eventdata.parentImage">Hello Test</field>
-        <description>Hello Test</description>
+<group name="windows,,windows_security, no_group">
+
+    <!-- Пока не знаю в какую группу поместить -->
+    <rule id="500500" level="15">
+        <if_sid>61610</if_sid>
+        <field name="win.system.startModule">\\kernel32.dll$</field>
+        <field name="win.system.message">LoadLibraryA</field>
+        <description>CreateRemoteThread API and LoadLibrary</description>
+        <options>no_full_log</options>
+            
+        <mitre>
+            <id>T1055</id> <!-- an old one -->
+            <id>T1055.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/sysmon/sysmon_createremotethread_loadlibrary.yml</info>
+        <info type="text">Detects potential use of CreateRemoteThread api and LoadLibrary function to inject DLL into a process </info>
+        <options>no_full_log</options>
+        <group>attack.defense_evasion, needs, metron, win016,</group>
     </rule>
+
+    <rule id="500501" level="14">
+        <field name="win.system.eventID">^4662$</field>
+        <match>Replicating Directory Changes All|</match>
+        <match>1131f6ad-9c07-11d1-f79f-00c04fc2dcd2</match>
+        <match negate="yes">Window Manager</match> <!-- исключение -->
+        <match negate="yes">^NT \s*AUTHORITY</match> <!-- исключение -->
+        <match negate="yes">^MSOL_</match> <!-- исключение -->
+        <match negate="yes">\$$</match> <!-- исключение -->
+        <description>Mimikatz DC Sync</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1003</id> <!-- an old one -->
+            <id>T1003.006</id>
+            <id>S0002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_dcsync.yml</info>
+        <info type="text">Detects Mimikatz DC sync security events </info>
+        <options>no_full_log</options>
+        <group>attack.credential_access, needs, metron, win067,</group>
+    </rule>
+
 </group>

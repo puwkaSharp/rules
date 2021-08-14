@@ -1,0 +1,80 @@
+<!--
+  -  Microsoft Windows Remote Admin Tools rules
+  -  Author: ECSSEC Information Security Monitoring Center "Socol"
+  -  Copyright (C) 2021, Ecssec Inc.
+-->
+
+<!-- 
+    ID 101000 - это правила для обнаружения подозрительных изменений в реестре
+    Правила предварительно будут располагаться в диапазоне 101000..101099 
+-->
+
+<group name="windows,windows_security,registry">
+
+    <rule id="101000" level="0">
+        <if_sid>61614, 61615</if_sid>
+        <description>Registry Event</description>
+        <options>no_full_log</options>
+        <group>registry_event_12_13</group>
+    </rule>
+
+    <rule id="101001" level="15">
+        <if_group>registry_event_12_13</if_group>
+        <field name="win.system.targetObject">(SYSTEM\\)</field>
+        <field name="win.system.targetObject">\\services\\localNETService$</field>
+        <description>Registry Entries For Azorult Malware</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1112</id> 
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/mal_azorult_reg.yml</info>
+        <info type="text">Detects the presence of a registry key created during Azorult execution </info>
+        <options>no_full_log</options>
+        <group>attack.execution, malware, needs, metron, win032,</group>
+    </rule>
+
+    <rule id="101002" level="15">
+        <if_group>registry_event_12_13</if_group>
+        <field name="win.system.targetObject">(^HKLM\\SYSTEM\\Setup\\PrintResponsor\\)|(HKLM\\HARDWARE\\{804423C2-F490-4ac3-BFA5-13DEDE63A71A})|(HKLM\\HARDWARE\\{A5124AF5-DF23-49bf-B0ED-A18ED3DEA027})|(HKLM\\HARDWARE\\{2DB80286-1784-48b5-A751-B6ED1F490303})</field>
+        <description>FlowCloud Malware</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1112</id> 
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_flowcloud.yml</info>
+        <info type="text">Detects FlowCloud malware from threat group TA410 </info>
+        <options>no_full_log</options>
+        <group>attack.persistence, malware, needs, metron, win035,</group>
+    </rule>
+
+    <rule id="101003" level="15">
+        <if_group>registry_event_12_13</if_group>
+        <field name="win.system.targetObject">(\\Software\\AppDataLow\\Software\\Microsoft\\)</field>
+        <description>Ursnif</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1112</id> 
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_ursnif.yml</info>
+        <info type="text">Detects new registry key created by Ursnif malware. </info>
+        <options>no_full_log</options>
+        <group>attack.execution, malware, needs, metron, win039,</group>
+    </rule>
+
+    <rule id="101004" level="14">
+        <if_group>registry_event_12_13</if_group>
+        <field name="win.system.targetObject">(\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\\UserAuthentication)|(\\CurrentControlSet\\Control\\Terminal Server\\fDenyTSConnections)</field>
+        <field name="win.system.d etails">DWORD \s*\(0x00000000\)</field>
+        <description>RDP Registry Modification</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>T1112</id> 
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/registry_event/sysmon_rdp_registry_modification.yml</info>
+        <info type="text">Detects potential malicious modification of the property value of fDenyTSConnections </info>
+        <info type="text">and UserAuthentication to enable remote desktop connections. </info>
+        <options>no_full_log</options>
+        <group>attack.defense_evasion, malware, needs,</group>
+    </rule>
+
+</group>

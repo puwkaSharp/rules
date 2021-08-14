@@ -1,6 +1,6 @@
 <!-- Andrew. -->
 <!-- Перезаписываю два правила сисмон 11, для того чтобы добавить полезную нам группу win_event_file_creation. -->
-<group name="windows,sysmon,"> 
+<group name="windows,sysmon,">
   <rule id="61613" level="1" overwrite="yes">
     <if_sid>61600</if_sid>
     <field name="win.system.eventID">^11$</field>
@@ -8,7 +8,6 @@
     <group>sysmon_event_11,win_event_file_creation,</group>
   </rule>
 </group>
-
 <group name="sysmon,">
   <rule id="185009" level="1" overwrite="yes">
     <if_sid>18100</if_sid>
@@ -17,56 +16,56 @@
     <group>sysmon_event_11,win_event_file_creation,</group>
   </rule>
 </group>
-
 <!-- id 100500 свободно -->
 
-<group name="windows,sysmon_event_11,win_event_file_creation,"> <!-- я думаю так можно дальше и использовать эту группу -->
-  
+<group name="windows,sysmon_event_11,win_event_file_creation,">
+  <!-- я думаю так можно дальше и использовать эту группу -->
+
   <!-- Анвар залез сюда чтобы вкинуть правило 083 -->
   <rule id="100601" level="14">
-   <if_group>win_event_file_creation</if_group>
-   <field name="win.eventdata.targetFilename">\\Microsoft\\Word\\Startup</field>
-   <field name="win.eventdata.targetFilename">.wll$</field>
-   <description>Microsoft Office Word Add-In Loading</description>
-   <info type="text">Detects add-ins that load when Microsoft Word starts. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
-   <mitre>
-     <id>T1137</id> <!-- an old one -->
-     <id>T1137.006</id>
-   </mitre>
-   <group>attack.persistence, metron, win083,</group>
+    <if_group>win_event_file_creation</if_group>
+    <field name="win.eventdata.targetFilename">\\Microsoft\\Word\\Startup</field>
+    <field name="win.eventdata.targetFilename">.wll$</field>
+    <description>Microsoft Office Word Add-In Loading</description>
+    <info type="text">Detects add-ins that load when Microsoft Word starts. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+    <mitre>
+      <id>T1137</id> <!-- an old one -->
+      <id>T1137.006</id>
+    </mitre>
+    <group>attack.persistence, metron, win083,</group>
   </rule>
-  
+
   <rule id="100602" level="14">
-   <if_group>win_event_file_creation</if_group>
-   <field name="win.eventdata.targetFilename">\\Microsoft\\Excel\\Startup</field>
-   <field name="win.eventdata.targetFilename">.xll$</field>
-   <description>Microsoft Office Excel Add-In Loading</description>
-   <info type="text">Detects add-ins that load when Microsoft Excel starts. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
-   <mitre>
-     <id>T1137</id> <!-- an old one -->
-     <id>T1137.006</id>
-   </mitre>
-   <group>attack.persistence, metron, win083,</group>
+    <if_group>win_event_file_creation</if_group>
+    <field name="win.eventdata.targetFilename">\\Microsoft\\Excel\\Startup</field>
+    <field name="win.eventdata.targetFilename">.xll$</field>
+    <description>Microsoft Office Excel Add-In Loading</description>
+    <info type="text">Detects add-ins that load when Microsoft Excel starts. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+    <mitre>
+      <id>T1137</id> <!-- an old one -->
+      <id>T1137.006</id>
+    </mitre>
+    <group>attack.persistence, metron, win083,</group>
   </rule>
-  
+
   <rule id="100603" level="14">
-   <if_group>win_event_file_creation</if_group>
-   <field name="win.eventdata.targetFilename">\\Microsoft\\Addins</field>
-   <field name="win.eventdata.targetFilename">.xlam$|.xla$</field>
-   <description>Microsoft Office Add-In Loading</description>
-   <info type="text">Detects add-ins that load when Microsoft Word or Excel starts. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
-   <mitre>
-     <id>T1137</id> <!-- an old one -->
-     <id>T1137.006</id>
-   </mitre>
-   <group>attack.persistence, metron, win083,</group>
+    <if_group>win_event_file_creation</if_group>
+    <field name="win.eventdata.targetFilename">\\Microsoft\\Addins</field>
+    <field name="win.eventdata.targetFilename">.xlam$|.xla$</field>
+    <description>Microsoft Office Add-In Loading</description>
+    <info type="text">Detects add-ins that load when Microsoft Word or Excel starts. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/file_event/sysmon_office_persistence.yml</info>
+    <mitre>
+      <id>T1137</id> <!-- an old one -->
+      <id>T1137.006</id>
+    </mitre>
+    <group>attack.persistence, metron, win083,</group>
   </rule>
   <!-- Всё уже ушёл -->
 
-<!--_________________________1¶1______________________ кыш, это мое болото // Ахаххаха // Ещё изменение 
+  <!--_________________________1¶1______________________ кыш, это мое болото // Ахаххаха // Ещё изменение 
     _________________________¶¶¶______________________
     _____________1¶¶111¶¶¶1_¶¶¶_______________________
     ____________1¶11111¶¶¶¶1¶_________________________
@@ -109,16 +108,16 @@
     _________1¶¶¶¶¶¶¶1___________1¶¶¶¶¶¶¶¶____________
     ________¶¶¶¶¶¶¶¶¶¶____________1¶¶¶¶¶¶¶____________
     _____¶¶¶¶¶¶¶¶¶¶¶¶¶____________1¶¶¶¶¶¶¶1___________ -->
-    
+
   <rule id="100604" level="2">
     <if_group>win_event_file_creation</if_group>
     <field name="win.eventdata.targetFilename">\\lsass\.\.\.\.\..dmp$</field>
     <description>Sysmon - Event 11: FileCreate by $(data.win.eventdata.image)</description>
     <info type="text">Detects the use of CreateMiniDump hack tool used to dump the LSASS process memory for credential extraction on the attacker's machine. </info>
-	<info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
-		<mitre>
-     <id>T1003.001</id>
-   </mitre>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
     <group>attack.credential_access, metron, win009.1,</group>
   </rule>
 
@@ -126,12 +125,28 @@
     <if_group>win_event_file_creation</if_group>
     <field name="win.eventdata.targetFilename">\\AppData\\Local\\Microsoft\\Cache134.dat$|\\AppData\\Local\\Microsoft\\ExplorerSync.db$</field>
     <description>Detects Octopus Scanner Malware by $(data.win.eventdata.image)</description>
-	<info type="text">Supply Chain Compromise: Compromise Software Dependencies and Development Tools. </info>
-	<info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_octopus_scanner.yml</info>
-	<mitre>
-     <id>T1195.001</id>
-   </mitre>
+    <info type="text">Supply Chain Compromise: Compromise Software Dependencies and Development Tools.</info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_octopus_scanner.yml</info>
+    <mitre>
+      <id>T1195.001</id>
+    </mitre>
     <group>attack.Initial_Access, metron, win037,</group>
   </rule>
-  
+
+  <!-- Ругается на регулярку, не понимаю, как ее сделать нормально-->
+  <rule id="100606" level="3">
+    <info type="text">Application Virtualization Utility is included with Microsoft Office.We are able to abuse “AppVLP” to execute shell commands.</info>
+    <info type="text">Normally, this binary is used for Application Virtualization, but we can use it as an abuse binary to circumvent the ASR file path rule folder or to mark a file as a system file</info>
+    <!--исходное field name="win.eventdata.commandline">(?i).*appvlp.exe.*(cmd.exe|powershell.exe).*(.sh|.exe|.dll|.bin|.bat|.cmd|.js|.msh|.reg|.scr|.ps|.vb|.jar|.pl|.inf)</field-->
+    <field name="win.eventdata.commandline">appvlp.exe</field>
+    <field name="win.eventdata.commandline">cmd.exe|powershell.exe</field>
+    <field name="win.eventdata.commandline">.sh|.exe|.dll|.bin|.bat|.cmd|.js|.msh|.reg|.scr|.ps|.vb|.jar|.pl|.inf</field>
+    <description>Using AppVLP To Circumvent ASR File Path Rule</description>
+    <mitre>
+        <id>T1218</id>
+    </mitre>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_asr_bypass_via_appvlp_re.yml</info>
+    <group>attack.defense_evasion, attack.execution, win059</group>
+</rule>
+
 </group>

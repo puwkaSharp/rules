@@ -9,7 +9,7 @@
     Правила предварительно будут располагаться в диапазоне 100500..100599 
 -->
 
-<group name="windows, windows_securit, suspicious_services, test, needs">
+<group name="windows, windows_security, suspicious_services, test, needs">
     <rule id="100500" level="8">
 
         <info type="text">This method detects a service install of the malicious Microsoft Network Realtime Inspection Service service described in StoneDrill report by Kaspersky</info>
@@ -25,7 +25,7 @@
         </mitre>
 
         <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_apt_stonedrill.yml</info>
-        <group>attack.persistence, 100attack.g0064</group>
+        <group>attack.persistence, attack.g0064, win056</group>
     </rule>
 
     <rule id="100501" level="12">
@@ -62,7 +62,7 @@
             <id>T1035</id>
             <id>T1569.002</id>
         </mitre>
-s
+        s
         <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hack_smbexec.yml</info>
         <group>attack.lateral_movement, attack.execution</group>
     </rule>
@@ -78,7 +78,8 @@ s
         <description>HybridConnectionManager Service Installation</description>
 
         <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hybridconnectionmgr_svc_installation.yml</info>
-        <group>attack.persistence</group>>
+        <group>attack.persistence</group>
+        >
     </rule>
 
     <rule id="100504" level="7">
@@ -89,4 +90,135 @@ s
         <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_hybridconnectionmgr_svc_running.yml</info>
         <group>attack.persistence</group>
     </rule>
+    <!--
+    <rule id="100505" level="15">
+        <field name="win.system.eventID">7045</field>
+        <field name="win.system.serviceName">(ADMIN/$\.*.exe)|(%COMSPEC%\.*start\.*powershell)|(powershell \s*-nop \s*-w \s*hidden \s*-encodedcommand)|(IEX \s*\(New-Object \s*Net.Webclient\).DownloadString\('http://127.0.0.1:\)</field>
+        <description>CobaltStrike Service Installations</description>
+        <options>no_full_log</options>
+        <mitre>
+            <id>t1021</id>
+            <id>T1021.002</id>
+            <id>t1543</id>
+            <id>t1543.003</id>
+            <id>t1569</id>
+            <id>t1569.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_cobaltstrike_service_installs.yml</info>
+        <info type="text">Detects known malicious service installs that appear in cases in which a Cobalt Strike beacon elevates privileges or lateral movement </info>
+        <group>attack.execution, attack.privilege_escalation, attack.lateral_movement,</group>
+    </rule>
+-->
+
+    <rule id="100506" level="7">
+        <info type="text">This detection method points out highly relevant Antivirus events</info>
+        <field name="win.eventdata.message">\.*htool\.*|\.*hacktool\.*|\.*asp/backdoor\.*|\.*jsp/backdoor\.*|\.*php/backdoor\.*|\.*xscan\.*|</field>
+        <field name="win.eventdata.message">\.*backdoor.asp\.*|\.*backdoor.jsp\.*|\.*backdoor.php\.*|\.*webshell\.*|\.*portscan\.*|\.*clearlog\.*|</field>
+        <field name="win.eventdata.message">\.*mimikatz\.*|\.*wincred\.*|\.*plugx\.*|\.*korplug\.*|\.*pwdump\.*|\.*chopper\.*|\.*wmiexec\.*|\.*aspxspy\.*</field>
+        <field name="win.eventdata.message">!\.keygen\.|!\.crack\.</field>
+        <description>Relevant Anti-Virus Event</description>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_av_relevant_match.yml</info>
+        <group>win061</group>
+    </rule>
+
+    <rule id="100507" level="3">
+        <info type="text">Potential adversaries accessing the microphone and webcam in an endpoint.</info>
+        <field name="win.system.eventID">4657, 4656, 4663</field>
+        <field name="win.eventdata.objectname">\.*\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\microphone\\NonPackaged\.*|</field>
+        <field name="win.eventdata.objectname">\.*\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\CapabilityAccessManager\\ConsentStore\\webcam\\NonPackaged\.*</field>
+        <description>Processes Accessing the Microphone and Webcam</description>
+        <mitre>
+            <id>T1123</id>
+        </mitre>
+        <info type="link"></info>
+        <group>attack.collection, win062</group>
+    </rule>
+
+    <rule id="100508" level="12">
+        <info type="text">Detects a threat actor creating a file named `iertutil.dll` in the `C:\Program Files\Internet Explorer\` directory over the network for a DCOM InternetExplorer DLL Hijack scenario.</info>
+        <field name="win.system.eventID">5145</field>
+        <field name="win.eventdata.relativetargetname">\\Internet Explorer\\iertutil.dll$</field>
+        <field name="win.eventdata.subjectusername">!\$$</field>
+        <description>T1021 DCOM InternetExplorer.Application Iertutil DLL Hijack</description>
+        <mitre>
+            <id>T1021.002</id>
+            <id>T1021.003</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_dcom_iertutil_dll_hijack.yml</info>
+        <group>attack.lateral_movement, win066</group>
+    </rule>
+
+    <rule id="100509" level="12">
+        <info type="text">Detects tools extracting LSA secret DPAPI domain backup key from Domain Controllers</info>
+        <field name="win.system.eventID">5145</field>
+        <field name="win.eventdata.objecttype">SecretObject</field>
+        <field name="win.eventdata.objectname">BCKUPKEY</field>
+        <field name="win.eventdata.accessmask">0x2</field>
+        <description>DPAPI Domain Backup Key Extraction</description>
+        <mitre>
+            <id>T1003</id>
+            <id>T1003.004</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_dpapi_domain_backupkey_extraction.yml</info>
+        <group>attack.credential_access, win069</group>
+    </rule>
+
+    <rule id="100510" level="12">
+        <info type="text">Detects anyone attempting a backup for the DPAPI Master Key. This events gets generated at the source and not the Domain Controller.</info>
+        <field name="win.system.eventID">4692</field>
+        <description>DPAPI Domain Master Key Backup Attempt</description>
+        <mitre>
+            <id>T1003</id>
+            <id>T1003.004</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_dpapi_domain_masterkey_backup_attempt.yml</info>
+        <group>attack.credential_access, win070</group>
+    </rule>
+
+    <rule id="100511" level="12">
+        <info type="text">Potential adversaries stopping ETW providers recording loaded .NET assemblies.</info>
+        <field name="win.system.eventID">4657</field>
+        <field name="win.eventdata.objectname">\\SOFTWARE\\Microsoft\\.NETFramework$</field>
+        <field name="win.eventdata.objectvaluename">ETWEnabled</field>
+        <field name="win.eventdata.newvalue">0</field>
+        <description>COMPlus_ETWEnabled Registry Modification</description>
+        <mitre>
+            <id>T1112</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_etw_modification.yml</info>
+        <group>attack.defense_evasion, win071</group>
+    </rule>
+
+    <rule id="100512" level="7">
+        <info type="text">1550.002</info>
+        <field name="win.system.eventID">4776, 4624, 4625</field>
+        <field name="win.eventdata.workstationname">RULER</field>
+        <description>Hacktool Ruler</description>
+        <mitre>
+            <id>T1087</id>
+            <id>T1075</id>
+            <id>Tt1114</id>
+            <id>T1059</id>
+            <id>T1550.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_alert_ruler.yml</info>
+        <group>attack.discovery, attack.execution, win054</group>
+    </rule>
+
+    <rule id="100513" level="12">
+        <info type="text">This method detects mimikatz keywords in different Eventlogs (some of them only appear in older Mimikatz version that are however still used by different threat groups)</info>
+        <field name="win.eventdata.message">mimikatz|mimilib|eo.oe.kiwi|\p+3 eo.oe|privilege::debug|</field>
+        <field name="win.eventdata.message">sekurlsa::logonpasswords|lsadump::sam|mimidrv.sys| p::d | s::l </field>
+        <description>Mimikatz Use</description>
+        <mitre>
+            <id>T1003.001</id>
+            <id>T1003.002</id>
+            <id>T1003.003</id>
+            <id>T1003.004</id>
+            <id>T1003.006</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/builtin/win_alert_mimikatz_keywords.yml</info>
+        <group>attack.lateral_movement, attack.credential_access, win053</group>
+    </rule>
+
 </group>

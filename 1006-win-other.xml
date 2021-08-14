@@ -14,7 +14,7 @@
         <info type="text">Detects scenarios where an windows defender exclusion was added in registry</info>
         <info type="text">where an entity would want to bypass antivirus scanning from windows defender</info>
         <field name="win.system.eventID">4657, 4656, 4660, 4663</field>
-        <field name="win.eventdata.objectname">*\\Microsoft\\Windows Defender\\Exclusions*</field>
+        <field name="win.eventdata.objectname">*\\Microsoft\\Windows Defender\\Exclusions\\*</field>
         <description>asdasd</description>
         <mitre>
             <id>T1089</id>
@@ -95,4 +95,37 @@
         <group>attack.persistence, attack.privilege_escalation</group>
     </rule>
 
+    <rule id="100906" level="4">
+        <info type="text">Windows Defender logs when the history of detected infections is deleted. </info>
+        <info type="text">Log file will contain the message "Windows Defender Antivirus has removed history of malware and other potentially unwanted software".</info>
+        <field name="win.system.eventID">1013</field>
+        <field name="win.eventdata.eventtype">4</field>
+        <description>Windows Defender Malware Detection History Deletion</description>
+        <mitre>
+            <id>T1070.001</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_defender_history_delete.yml</info>
+        <group>attack.defense_evasion</group>
+    </rule>
+
+    <rule id="100907" level="4">
+        <info type="text">Detects blocking of process creations originating from PSExec and WMI commands</info>
+        <field name="win.system.eventID">1121</field>
+        <field name="win.eventdata.processname">\\wmiprvse.exe$|\\psexesvc.exe$</field>
+        <description>PSExec and WMI Process Creations Block</description>
+        <mitre>
+            <id>T1047</id>
+            <id>T1035</id>
+            <id>T1569.002</id>
+        </mitre>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_defender_psexec_wmi_asr.yml</info>
+        <group>attack.execution, attack.lateral_movement</group>
+    </rule>
+
+    <rule id="100908" level="3">
+        <info type="text">Detects all actions taken by Windows Defender malware detection engines</info>
+        <field name="win.system.eventID">1006|1116|1015|1117</field>
+        <description>Windows Defender Threat Detected</description>
+        <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/other/win_defender_threat.yml</info>
+    </rule>
 </group>

@@ -22,7 +22,7 @@
 
 <var name="PROC_FREQ">4</var> <!-- Значение по умолчанию количества событий за промежуток времент для сработки -->
 
-<group name="windows,windows_security,process_creation,">
+<group name="windows,windows_security,process_creation">
 
   <rule id="100100" level="3">
     <if_sid>60103</if_sid>
@@ -31,9 +31,9 @@
     <options>no_full_log</options>
     <group>process_creation_4688</group>
   </rule>
-    
+
   <!-- 100101 свободно -->
-  
+
   <rule id="100102" level="6">
     <if_group>process_creation_4688</if_group>
     <field name="win.eventdata.newProcessName">\\schtasks.exe$</field>
@@ -50,8 +50,9 @@
     <options>no_full_log</options>
     <group>attack.execution, attack.persistence, attack.privilege_escalation, car.2013-08-001, needs, metron, win010,</group>
   </rule>
-  
-  <rule id="100103" level="6"> <!-- дублирование правила для Sysmon -->
+
+  <rule id="100103" level="6">
+    <!-- дублирование правила для Sysmon -->
     <if_group>sysmon_event1</if_group>
     <field name="win.eventdata.image">\\schtasks.exe$</field>
     <field name="win.eventdata.commandLine"> /create </field>
@@ -67,7 +68,7 @@
     <options>no_full_log</options>
     <group>attack.execution, attack.persistence, attack.privilege_escalation, car.2013-08-001, needs, metron, win010,</group>
   </rule>
-  
+
   <!--TO DO: возможно нужны исключения к 100102
   <rule id="100103" level="3">
     <if_sid>100102</if_sid> 
@@ -100,7 +101,7 @@
   <rule id="100106" level="3">
     <if_group>process_creation_4688</if_group>
     <field name="win.eventdata.newProcessName">\\rar.exe$</field>
-    <field name="win.eventdata.commandLine"> \s*a \s*</field>
+    <field name="win.eventdata.commandLine"> \s*a\s*</field>
     <description>Data Compressed - rar.exe</description>
     <info type="text">An adversary may compress data (e.g., sensitive documents) that is collected prior to exfiltration in order to make it portable and minimize the amount of data sent over the network </info>
     <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_data_compressed_with_rar.yml</info>
@@ -111,8 +112,9 @@
     </mitre>
     <group>attack.exfiltration, attack.collection, metron, win013,</group>
   </rule>
-  
-  <rule id="100107" level="3"> <!-- дублирование правила для Sysmon -->
+
+  <rule id="100107" level="3">
+    <!-- дублирование правила для Sysmon -->
     <if_group>sysmon_event1</if_group>
     <field name="win.eventdata.image">\\rar.exe$</field>
     <field name="win.eventdata.commandLine"> \s*a \s*</field>
@@ -139,8 +141,9 @@
     </mitre>
     <group>attack.credential_access, attack.discovery, metron, win014,</group>
   </rule>
-  
-  <rule id="100109" level="3"> <!-- дублирование правила для Sysmon -->
+
+  <rule id="100109" level="3">
+    <!-- дублирование правила для Sysmon -->
     <if_group>sysmon_event1</if_group>
     <field name="win.eventdata.image">\\tshark.exe$|\\windump.exe</field>
     <description>Network Sniffing $(win.eventdata.image)</description>
@@ -152,7 +155,7 @@
     </mitre>
     <group>attack.credential_access, attack.discovery, metron, win014,</group>
   </rule>
-  
+
   <rule id="100110" level="6">
     <if_sid>100100, 61603</if_sid>
     <field name="win.eventdata.commandLine">reg</field>
@@ -168,7 +171,7 @@
     </mitre>
     <group>attack.defense_evasion, metron, win018,</group>
   </rule>
-  
+
   <rule id="100111" level="6">
     <if_group>process_creation_4688</if_group>
     <field name="win.eventdata.newProcessName">\\auditpol.exe$</field>
@@ -183,9 +186,10 @@
     </mitre>
     <group>attack.defense_evasion, attack.discovery, metron, win019,</group>
   </rule>
-  
-  <rule id="100112" level="6"> <!-- дублирование правила для Sysmon -->
-    <if_group>sysmon_event1</if_group> 
+
+  <rule id="100112" level="6">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
     <field name="win.eventdata.image">\\auditpol.exe$</field>
     <field name="win.eventdata.commandLine">disable|clear|remove|restore</field>
     <description>Suspicious Auditpol Usage $(win.eventdata.commandLine)</description>
@@ -198,7 +202,7 @@
     </mitre>
     <group>attack.defense_evasion, attack.discovery, metron, win019,</group>
   </rule>
-  
+
   <rule id="100113" level="6">
     <if_sid>100100, 61603</if_sid>
     <field name="win.eventdata.commandLine">(netsh \s*firewall \s*set \s*opmode \s*mode=disable)|(netsh \s*advfirewall \s*set \.* \s*state \s*off)</field>
@@ -212,7 +216,7 @@
     </mitre>
     <group>attack.defense_evasion, metron, win020,</group>
   </rule>
-  
+
   <rule id="100114" level="6">
     <if_sid>100100, 61603</if_sid>
     <field name="win.eventdata.commandLine">logman \s*stop \s*EventLog-System</field>
@@ -226,7 +230,7 @@
     </mitre>
     <group>attack.defense_evasion, metron, win021,</group>
   </rule>
-  
+
   <rule id="100115" level="6">
     <if_sid>100100, 61603</if_sid>
     <field name="win.eventdata.commandLine">wmic</field>
@@ -243,42 +247,42 @@
     </mitre>
     <group>attack.defense_evasion, metron, win022,</group>
   </rule>
-  
+
   <rule id="100116" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\netsh.exe$</field>
-   <field name="win.eventdata.commandLine">firewall</field>
-   <field name="win.eventdata.commandLine">add</field>
-   <description>Netsh Port or Application Allowed $(win.eventdata.commandLine)</description>
-   <info type="text">Allow Incoming Connections by Port or Application on Windows Firewall. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_creation/win_netsh_fw_add.yml</info>
-   <mitre>
-     <id>T1089</id> <!-- an old one -->
-     <id>T1562</id>
-     <id>T1562.004</id>
-   </mitre>
-   <group>attack.defense_evasion, metron, win030,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\netsh.exe$</field>
+    <field name="win.eventdata.commandLine">firewall</field>
+    <field name="win.eventdata.commandLine">add</field>
+    <description>Netsh Port or Application Allowed $(win.eventdata.commandLine)</description>
+    <info type="text">Allow Incoming Connections by Port or Application on Windows Firewall. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_creation/win_netsh_fw_add.yml</info>
+    <mitre>
+      <id>T1089</id> <!-- an old one -->
+      <id>T1562</id>
+      <id>T1562.004</id>
+    </mitre>
+    <group>attack.defense_evasion, metron, win030,</group>
   </rule>
-  
+
   <rule id="100117" level="6">
-   <if_group>sysmon_event1</if_group> <!-- дублирование правила для Sysmon -->
-   <field name="win.eventdata.image">\\netsh.exe$</field>
-   <field name="win.eventdata.commandLine">firewall</field>
-   <field name="win.eventdata.commandLine">add</field>
-   <description>Netsh Port or Application Allowed $(win.eventdata.commandLine)</description>
-   <info type="text">Allow Incoming Connections by Port or Application on Windows Firewall. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_creation/win_netsh_fw_add.yml</info>
-   <mitre>
-     <id>T1089</id> <!-- an old one -->
-     <id>T1562</id>
-     <id>T1562.004</id>
-   </mitre>
-   <group>attack.defense_evasion, metron, win030,</group>
+    <if_group>sysmon_event1</if_group> <!-- дублирование правила для Sysmon -->
+    <field name="win.eventdata.image">\\netsh.exe$</field>
+    <field name="win.eventdata.commandLine">firewall</field>
+    <field name="win.eventdata.commandLine">add</field>
+    <description>Netsh Port or Application Allowed $(win.eventdata.commandLine)</description>
+    <info type="text">Allow Incoming Connections by Port or Application on Windows Firewall. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/08ca62cc8860f4660e945805d0dd615ce75258c1/rules/windows/process_creation/win_netsh_fw_add.yml</info>
+    <mitre>
+      <id>T1089</id> <!-- an old one -->
+      <id>T1562</id>
+      <id>T1562.004</id>
+    </mitre>
+    <group>attack.defense_evasion, metron, win030,</group>
   </rule>
-  
+
   <rule id="100118" level="6">
     <if_sid>100100, 61603</if_sid>
-    <field name="win.eventdata.commandLine">System.Management.Automation.AmsiUtils</field>amsiInitFailed
+    <field name="win.eventdata.commandLine">System.Management.Automation.AmsiUtils</field>
     <field name="win.eventdata.commandLine">amsiInitFailed</field>
     <description>Powershell AMSI Bypass via .NET Reflection</description>
     <info type="text">Detects Request to amsiInitFailed that can be used to disable AMSI Scanning. </info>
@@ -290,363 +294,409 @@
     </mitre>
     <group>attack.defense_evasion, metron, win031,</group>
   </rule>
-  
+
   <!-- BlueMokingbird начало -->
-  
+
   <rule id="100119" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\cmd.exe$</field>
-   <field name="win.eventdata.commandLine">sc \s*config</field>
-   <field name="win.eventdata.commandLine">wercplsupporte.dll</field>
-   <description>Blue Mockingbird</description>
-   <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
-   <mitre>
-     <id>T1112</id>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\cmd.exe$</field>
+    <field name="win.eventdata.commandLine">sc \s*config</field>
+    <field name="win.eventdata.commandLine">wercplsupporte.dll</field>
+    <description>Blue Mockingbird</description>
+    <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
+    <mitre>
+      <id>T1112</id>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
   </rule>
-  
+
   <rule id="100120" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\wmic.exe$</field>
-   <field name="win.eventdata.commandLine">COR_PROFILER</field>
-   <description>Blue Mockingbird</description>
-   <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
-   <mitre>
-     <id>T1112</id>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\wmic.exe$</field>
+    <field name="win.eventdata.commandLine">COR_PROFILER</field>
+    <description>Blue Mockingbird</description>
+    <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
+    <mitre>
+      <id>T1112</id>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
   </rule>
-  
-  <rule id="100121" level="6"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group> 
-   <field name="win.eventdata.image">\\cmd.exe$</field>
-   <field name="win.eventdata.commandLine">sc \s*config</field>
-   <field name="win.eventdata.commandLine">wercplsupporte.dll</field>
-   <description>Blue Mockingbird</description>
-   <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
-   <mitre>
-     <id>T1112</id>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
+
+  <rule id="100121" level="6">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\cmd.exe$</field>
+    <field name="win.eventdata.commandLine">sc \s*config</field>
+    <field name="win.eventdata.commandLine">wercplsupporte.dll</field>
+    <description>Blue Mockingbird</description>
+    <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
+    <mitre>
+      <id>T1112</id>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
   </rule>
-  
-  <rule id="100122" level="3"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.image">\\wmic.exe$</field>
-   <field name="win.eventdata.commandLine">COR_PROFILER</field>
-   <description>Blue Mockingbird</description>
-   <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
-   <mitre>
-     <id>T1112</id>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
+
+  <rule id="100122" level="3">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\wmic.exe$</field>
+    <field name="win.eventdata.commandLine">COR_PROFILER</field>
+    <description>Blue Mockingbird</description>
+    <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
+    <mitre>
+      <id>T1112</id>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
   </rule>
-  
+
   <rule id="100123" level="3">
-   <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Blue Mokingbird -->
-   <field name="win.eventdata.targetObject">\\CurrentControlSet\\Services\\wercplsupport\\Parameters\\ServiceDll$</field>
-   <description>Blue Mockingbird</description>
-   <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
-   <mitre>
-     <id>T1112</id>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
+    <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Blue Mokingbird -->
+    <field name="win.eventdata.targetObject">\\CurrentControlSet\\Services\\wercplsupport\\Parameters\\ServiceDll$</field>
+    <description>Blue Mockingbird</description>
+    <info type="text">Attempts to detect system changes made by Blue Mockingbird. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_blue_mockingbird.yml</info>
+    <mitre>
+      <id>T1112</id>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, malware, blue_mockingbird, metron, win033,</group>
   </rule>
-  
+
   <!-- BlueMokingbird конец-->
-  
+
   <!-- DarkSide начало -->
-  
+
   <rule id="100124" level="12">
-   <if_sid>100100, 61603</if_sid>
-   <field name="win.eventdata.commandLine">'=[char][byte]\('0x'+</field>
-   <field name="win.eventdata.commandLine">-work \s*worker0 \s*-path</field>
-   <description>DarkSide Ransomware Pattern</description>
-   <info type="text">Detects DarkSide Ransomware and helpers. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
-   <group>malware, ransomware, darkside, metron, win034,</group>
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.commandLine">'=[char][byte]\('0x'+</field>
+    <field name="win.eventdata.commandLine">-work \s*worker0 \s*-path</field>
+    <description>DarkSide Ransomware Pattern</description>
+    <info type="text">Detects DarkSide Ransomware and helpers. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
+    <group>malware, ransomware, darkside, metron, win034,</group>
   </rule>
-  
+
   <rule id="100125" level="12">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\AppData\\Local\\Temp\\\.*</field>
-   <field name="win.system.message">DllHost.exe \s*/Processid:{3E5FC7F9-9A51-4367-9063-A120244FBEC7}</field>
-   <description>DarkSide Ransomware Pattern</description>
-   <info type="text">Detects DarkSide Ransomware and helpers. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
-   <group>malware, ransomware, darkside, metron, win034,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\AppData\\Local\\Temp\\\.*</field>
+    <field name="win.system.message">DllHost.exe \s*/Processid:{3E5FC7F9-9A51-4367-9063-A120244FBEC7}</field>
+    <description>DarkSide Ransomware Pattern</description>
+    <info type="text">Detects DarkSide Ransomware and helpers. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
+    <group>malware, ransomware, darkside, metron, win034,</group>
   </rule>
-  
-  <rule id="100126" level="12"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group> 
-   <field name="win.eventdata.image">\\AppData\\Local\\Temp\\\.*</field>
-   <field name="win.eventdata.parentCommandLine">DllHost.exe \s*/Processid:{3E5FC7F9-9A51-4367-9063-A120244FBEC7}</field>
-   <description>DarkSide Ransomware Pattern</description>
-   <info type="text">Detects DarkSide Ransomware and helpers. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
-   <group>malware, ransomware, darkside, metron, win034,</group>
+
+  <rule id="100126" level="12">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\AppData\\Local\\Temp\\\.*</field>
+    <field name="win.eventdata.parentCommandLine">DllHost.exe \s*/Processid:{3E5FC7F9-9A51-4367-9063-A120244FBEC7}</field>
+    <description>DarkSide Ransomware Pattern</description>
+    <info type="text">Detects DarkSide Ransomware and helpers. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_darkside.yml</info>
+    <group>malware, ransomware, darkside, metron, win034,</group>
   </rule>
-   
+
   <!-- DarkSide конец -->
-  
+
   <rule id="100127" level="12">
-   <if_sid>100100, 61603</if_sid>
-   <field name="win.eventdata.commandLine">-i \s*SM-tgytutrc \s*-s</field>
-   <description>LockerGoga Ransomware</description>
-   <info type="text">Detects LockerGoga Ransomware command line. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_lockergoga.yml</info>
-   <mitre>
-     <id>T1486</id>
-   </mitre>
-   <group>attack.impact, ransomware, malware, darkside, metron, win036,</group>
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.commandLine">-i \s*SM-tgytutrc \s*-s</field>
+    <description>LockerGoga Ransomware</description>
+    <info type="text">Detects LockerGoga Ransomware command line. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_lockergoga.yml</info>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+    <group>attack.impact, ransomware, malware, darkside, metron, win036,</group>
   </rule>
-  
-  
-    
+
+
   <!-- Ryuk начало -->
-  
-  <rule id="100128" level="12"> 
-   <if_group>process_creation_4688</if_group> 
-   <field name="win.eventdata.newProcessName">\\net.exe$|\\net1.exe$</field>
-   <field name="win.eventdata.commandLine">stop</field>
-   <field name="win.eventdata.commandLine">samss|audioendpointbuilder|unistoresvc_?????</field>
-   <description>Ryuk Ransomware</description>
-   <info type="text">Detects Ryuk Ransomware command lines. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_ryuk.yml</info>
-   <group>malware, ransomware, ruyk, metron, win038,</group>
+
+  <rule id="100128" level="12">
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\net.exe$|\\net1.exe$</field>
+    <field name="win.eventdata.commandLine">stop</field>
+    <field name="win.eventdata.commandLine">samss|audioendpointbuilder|unistoresvc_?????</field>
+    <description>Ryuk Ransomware</description>
+    <info type="text">Detects Ryuk Ransomware command lines. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_ryuk.yml</info>
+    <group>malware, ransomware, ruyk, metron, win038,</group>
   </rule>
-  
-  <rule id="100129" level="12"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group> 
-   <field name="win.eventdata.image">\\net.exe$|\\net1.exe$</field>
-   <field name="win.eventdata.commandLine">stop</field>
-   <field name="win.eventdata.commandLine">samss|audioendpointbuilder|unistoresvc_?????</field>
-   <description>Ryuk Ransomware</description>
-   <info type="text">Detects Ryuk Ransomware command lines. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_ryuk.yml</info>
-   <group>malware, ransomware, ruyk, metron, win038,</group>
+
+  <rule id="100129" level="12">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\net.exe$|\\net1.exe$</field>
+    <field name="win.eventdata.commandLine">stop</field>
+    <field name="win.eventdata.commandLine">samss|audioendpointbuilder|unistoresvc_?????</field>
+    <description>Ryuk Ransomware</description>
+    <info type="text">Detects Ryuk Ransomware command lines. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/malware/win_mal_ryuk.yml</info>
+    <group>malware, ransomware, ruyk, metron, win038,</group>
   </rule>
-  
+
   <!-- Ryuk конец -->
-  
+
   <!-- Godmode начало -->
   <rule id="100130" level="6">
-   <if_sid>100100, 61603</if_sid>
-   <field name="win.eventdata.commandLine">(\s*-NoP \s*)|( \s*-W \s*Hidden \s*)|( \s*-decode \s*)|( \s*/decode \s*)|( \s*-e\.* \s*JAB \s*)|( \s*-e\.* \s*SUVYI \s*)|( \s*-e\.* \s*SQBFAFgA \s*)|( \s*-e\.* \s*aWV4I \s*)|( \s*-e\.* \s*IAB \s*)|( \s*-e\.* \s*PAA \s*)|( \s*-e\.* \s*aQBlAHgA \s*)|(vssadmin \s*delete \s*shadows)|(reg \s*SAVE \s*HKLM\\SAM)|( \s*-ma \s*)|(Microsoft\\Windows\\CurrentVersion\\Run)|(.downloadstring\()|(.downloadfile\()|( \s*/ticket:)|( \s*sekurlsa)|( \s*p::d \s*)|(;iex\()|(schtasks\.* \s*/create \s*\.*AppData)|( \s*comsvcs.dll,MiniDump)|( \s*comsvcs.dll,#24)</field>
-   <description>Suspicious or malicious command line parameters</description>
-   <info type="text">Detects suspicious or malicious command line parameters. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.commandLine">(\s*-NoP \s*)|( \s*-W \s*Hidden \s*)|( \s*-decode \s*)|( \s*/decode \s*)|( \s*-e\.* \s*JAB \s*)|( \s*-e\.* \s*SUVYI \s*)|( \s*-e\.* \s*SQBFAFgA \s*)|( \s*-e\.* \s*aWV4I \s*)|( \s*-e\.* \s*IAB \s*)|( \s*-e\.* \s*PAA \s*)|( \s*-e\.* \s*aQBlAHgA \s*)|(vssadmin \s*delete \s*shadows)|(reg \s*SAVE \s*HKLM\\SAM)|( \s*-ma \s*)|(Microsoft\\Windows\\CurrentVersion\\Run)|(.downloadstring\()|(.downloadfile\()|( \s*/ticket:)|( \s*sekurlsa)|( \s*p::d \s*)|(;iex\()|(schtasks\.* \s*/create \s*\.*AppData)|( \s*comsvcs.dll,MiniDump)|( \s*comsvcs.dll,#24)</field>
+    <description>Suspicious or malicious command line parameters</description>
+    <info type="text">Detects suspicious or malicious command line parameters. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <rule id="100131" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.parentProcessName">(\\WINWORD.EXE)|(\\EXCEL.EXE)|(\\POWERPNT.exe)|(\\MSPUB.exe)|(\\VISIO.exe)|(\\OUTLOOK.EXE)</field>
-   <field name="win.eventdata.newProcessName">(\\cmd.exe)|(\\powershell.exe)|(\\wscript.exe)|(\\cscript.exe)|(\\schtasks.exe)|(\\scrcons.exe)|(\\regsvr32.exe)|(\\hh.exe)|(\\wmic.exe)|(\\mshta.exe)|(\\msiexec.exe)|(\\forfiles.exe)|(\\AppData)</field>
-   <description>Suspicious parent/child processes</description>
-   <info type="text">Detects suspicious or malicious command line parameters. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.parentProcessName">(\\WINWORD.EXE)|(\\EXCEL.EXE)|(\\POWERPNT.exe)|(\\MSPUB.exe)|(\\VISIO.exe)|(\\OUTLOOK.EXE)</field>
+    <field name="win.eventdata.newProcessName">(\\cmd.exe)|(\\powershell.exe)|(\\wscript.exe)|(\\cscript.exe)|(\\schtasks.exe)|(\\scrcons.exe)|(\\regsvr32.exe)|(\\hh.exe)|(\\wmic.exe)|(\\mshta.exe)|(\\msiexec.exe)|(\\forfiles.exe)|(\\AppData)</field>
+    <description>Suspicious parent/child processes</description>
+    <info type="text">Detects suspicious or malicious command line parameters. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
-  <rule id="100132" level="6"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.parentImage">(\\WINWORD.EXE)|(\\EXCEL.EXE)|(\\POWERPNT.exe)|(\\MSPUB.exe)|(\\VISIO.exe)|(\\OUTLOOK.EXE)</field>
-   <field name="win.eventdata.image">(\\cmd.exe)|(\\powershell.exe)|(\\wscript.exe)|(\\cscript.exe)|(\\schtasks.exe)|(\\scrcons.exe)|(\\regsvr32.exe)|(\\hh.exe)|(\\wmic.exe)|(\\mshta.exe)|(\\msiexec.exe)|(\\forfiles.exe)|(\\AppData)</field>
-   <description>Suspicious parent/child processes</description>
-   <info type="text">Detects suspicious or malicious command line parameters. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+
+  <rule id="100132" level="6">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.parentImage">(\\WINWORD.EXE)|(\\EXCEL.EXE)|(\\POWERPNT.exe)|(\\MSPUB.exe)|(\\VISIO.exe)|(\\OUTLOOK.EXE)</field>
+    <field name="win.eventdata.image">(\\cmd.exe)|(\\powershell.exe)|(\\wscript.exe)|(\\cscript.exe)|(\\schtasks.exe)|(\\scrcons.exe)|(\\regsvr32.exe)|(\\hh.exe)|(\\wmic.exe)|(\\mshta.exe)|(\\msiexec.exe)|(\\forfiles.exe)|(\\AppData)</field>
+    <description>Suspicious parent/child processes</description>
+    <info type="text">Detects suspicious or malicious command line parameters. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <rule id="100133" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\apache|\\tomcat|\\w3wp.exe|\\php-cgi.exe|\\nginx.exe|\\httpd.exe</field>
-   <field name="win.eventdata.commandLine">(net \s*user \s*)|(ping \s*-n \s*)|(systeminfo)|(\pcd\pecho)|(cd \s*/d)</field>
-   <description>Webshell</description>
-   <info type="text">Detects webshells. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\apache|\\tomcat|\\w3wp.exe|\\php-cgi.exe|\\nginx.exe|\\httpd.exe</field>
+    <field name="win.eventdata.commandLine">(net \s*user \s*)|(ping \s*-n \s*)|(systeminfo)|(\pcd\pecho)|(cd \s*/d)</field>
+    <description>Webshell</description>
+    <info type="text">Detects webshells. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
-  <rule id="100134" level="6"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.image">\\apache|\\tomcat|\\w3wp.exe|\\php-cgi.exe|\\nginx.exe|\\httpd.exe</field>
-   <field name="win.eventdata.commandLine">(net \s*user \s*)|(ping \s*-n \s*)|systeminfo|(\pcd\pecho)|(cd \s*/d)</field>
-   <description>Webshell</description>
-   <info type="text">Detects webshells. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+
+  <rule id="100134" level="6">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\apache|\\tomcat|\\w3wp.exe|\\php-cgi.exe|\\nginx.exe|\\httpd.exe</field>
+    <field name="win.eventdata.commandLine">(net \s*user \s*)|(ping \s*-n \s*)|systeminfo|(\pcd\pecho)|(cd \s*/d)</field>
+    <description>Webshell</description>
+    <info type="text">Detects webshells. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <rule id="100135" level="6">
-   <if_sid>61613</if_sid> <!-- это события Sysmon Event 11, т.к. это часть комплексного правила Godmode Rule -->
-   <field name="win.eventdata.targetFilename">(.dmp0)|(Desktop\\how)|(Desktop\\decrypt)</field>
-   <description>Ransomware File Creation</description>
-   <info type="text">Detects files often created by ransomware. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_sid>61613</if_sid> <!-- это события Sysmon Event 11, т.к. это часть комплексного правила Godmode Rule -->
+    <field name="win.eventdata.targetFilename">(.dmp0)|(Desktop\\how)|(Desktop\\decrypt)</field>
+    <description>Ransomware File Creation</description>
+    <info type="text">Detects files often created by ransomware. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
 
   <rule id="100136" level="6">
-   <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Godmode Rule -->
-   <field name="win.eventdata.targetObject">UserInitMprLogonScript|(\\CurrentVersion\\Image File \s*Execution \s*Options\\)</field>
-   <description>Persistance attempt</description>
-   <info type="text">Detects persistance attempt. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Godmode Rule -->
+    <field name="win.eventdata.targetObject">UserInitMprLogonScript|(\\CurrentVersion\\Image File \s*Execution \s*Options\\)</field>
+    <description>Persistance attempt</description>
+    <info type="text">Detects persistance attempt. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <rule id="100137" level="6">
-   <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Godmode Rule -->
-   <field name="win.eventdata.targetObject">(\\Microsoft\\Windows\\CurrentVersion\\Run\\)|(\\Microsoft\\Windows\\CurrentVersion\\RunOnce\\)</field>
-   <field name="win.eventdata.details">AppData|(\\Users\\Public\\)|(\\Temp\\)|powershell|wscript|cscript</field>
-   <description>Persistance attempt</description>
-   <info type="text">Detects persistance attempt. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_sid>61614, 61615, 61616</if_sid> <!-- это события Sysmon Event 12, 13, 14 расположены здесь, т.к. это часть комплексного правила по Godmode Rule -->
+    <field name="win.eventdata.targetObject">(\\Microsoft\\Windows\\CurrentVersion\\Run\\)|(\\Microsoft\\Windows\\CurrentVersion\\RunOnce\\)</field>
+    <field name="win.eventdata.details">AppData|(\\Users\\Public\\)|(\\Temp\\)|powershell|wscript|cscript</field>
+    <description>Persistance attempt</description>
+    <info type="text">Detects persistance attempt. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <rule id="100138" level="6">
-   <if_sid>61138</if_sid> <!-- Установлен новый сервис, это события Event ID 7045, т.к. это часть комплексного правила Godmode Rule -->
-   <field name="win.eventdata.serviceName">WCESERVICE|(WCE \s*SERVICE)|winexesvc|DumpSvc|pwdump|gsecdump|cachedump</field>
-   <description>Malicious service install</description>
-   <info type="text">Detects malicious service installs. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
-   <group>godmode, metron, win040,</group>
+    <if_sid>61138</if_sid> <!-- Установлен новый сервис, это события Event ID 7045, т.к. это часть комплексного правила Godmode Rule -->
+    <field name="win.eventdata.serviceName">WCESERVICE|(WCE \s*SERVICE)|winexesvc|DumpSvc|pwdump|gsecdump|cachedump</field>
+    <description>Malicious service install</description>
+    <info type="text">Detects malicious service installs. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/other/godmode_sigma_rule.yml</info>
+    <group>godmode, metron, win040,</group>
   </rule>
-  
+
   <!-- Godmode конец -->
-  
+
   <rule id="100139" level="6">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\advanced_ip_scanner</field>
-   <description>Advanced IP Scanner</description>
-   <info type="text">Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_advanced_ip_scanner.yml</info>
-   <mitre>
-     <id>T1046</id>
-   </mitre>
-   <group>attack.discovery, scanner, metron, win081,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\advanced_ip_scanner</field>
+    <description>Advanced IP Scanner</description>
+    <info type="text">Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_advanced_ip_scanner.yml</info>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+    <group>attack.discovery, scanner, metron, win081,</group>
   </rule>
-  
-  <rule id="100140" level="6"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.image">\\advanced_ip_scanner</field>
-   <description>Advanced IP Scanner</description>
-   <info type="text">Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_advanced_ip_scanner.yml</info>
-   <mitre>
-     <id>T1046</id>
-   </mitre>
-   <group>attack.discovery, scanner, metron, win081,</group>
+
+  <rule id="100140" level="6">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\advanced_ip_scanner</field>
+    <description>Advanced IP Scanner</description>
+    <info type="text">Detects the use of Advanced IP Scanner. Seems to be a popular tool for ransomware groups. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_advanced_ip_scanner.yml</info>
+    <mitre>
+      <id>T1046</id>
+    </mitre>
+    <group>attack.discovery, scanner, metron, win081,</group>
   </rule>
-  
+
   <rule id="100141" level="14">
-   <if_sid>100100, 61603</if_sid>
-   <field name="win.eventdata.commandLine">domainlist|trustdmp|dcmodes|adinfo|( \s*dclist \s*)|computer_pwdnotreqd|(objectcategory=)|(-subnets \s*-f)|(name="Domain \s*Admins")|(-sc \s*u:)|domainncs|dompol|( \s*oudmp \s*)|subnetdmp|gpodmp|fspdmp|users_noexpire|computers_active</field>
-   <description>AdFind Usage Detection</description>
-   <info type="text">AdFind continues to be seen across majority of breaches. It is used to domain trust discovery to plan out subsequent steps in the attack chain. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/b296c643deb9f2f1f7d65a5351cfb7a655f9c136/rules/windows/process_creation/win_ad_find_discovery.yml</info>
-   <mitre>
-     <id>T1482</id>
-     <id>T1018</id>
-   </mitre>
-   <group>attack.discovery, scanner, metron, win082,</group>
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.commandLine">domainlist|trustdmp|dcmodes|adinfo|( \s*dclist \s*)|computer_pwdnotreqd|(objectcategory=)|(-subnets \s*-f)|(name="Domain \s*Admins")|(-sc \s*u:)|domainncs|dompol|( \s*oudmp \s*)|subnetdmp|gpodmp|fspdmp|users_noexpire|computers_active</field>
+    <description>AdFind Usage Detection</description>
+    <info type="text">AdFind continues to be seen across majority of breaches. It is used to domain trust discovery to plan out subsequent steps in the attack chain. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/b296c643deb9f2f1f7d65a5351cfb7a655f9c136/rules/windows/process_creation/win_ad_find_discovery.yml</info>
+    <mitre>
+      <id>T1482</id>
+      <id>T1018</id>
+    </mitre>
+    <group>attack.discovery, scanner, metron, win082,</group>
   </rule>
-  
+
   <rule id="100142" level="14">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.parentProcessName">\\svchost.exe</field>
-   <field name="win.eventdata.newProcessName">\\mshta.exe</field>
-   <description>MSHTA Spwaned by SVCHOST</description>
-   <info type="text">Detects MSHTA.EXE spwaned by SVCHOST as seen in LethalHTA and described in report. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/process_creation/win_lethalhta.yml</info>
-   <mitre>
-     <id>T1218</id>
-     <id>T1218.005</id>
-     <id>T1170</id> <!-- an old one -->
-   </mitre>
-   <group>attack.defense_evasion, attack.execution, metron, win084,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.parentProcessName">\\svchost.exe</field>
+    <field name="win.eventdata.newProcessName">\\mshta.exe</field>
+    <description>MSHTA Spwaned by SVCHOST</description>
+    <info type="text">Detects MSHTA.EXE spwaned by SVCHOST as seen in LethalHTA and described in report. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/process_creation/win_lethalhta.yml</info>
+    <mitre>
+      <id>T1218</id>
+      <id>T1218.005</id>
+      <id>T1170</id> <!-- an old one -->
+    </mitre>
+    <group>attack.defense_evasion, attack.execution, metron, win084,</group>
   </rule>
-  
-  <rule id="100143" level="14"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.parentImage">\\svchost.exe</field>
-   <field name="win.eventdata.image">\\mshta.exe</field>
-   <description>MSHTA Spwaned by SVCHOST</description>
-   <info type="text">Detects MSHTA.EXE spwaned by SVCHOST as seen in LethalHTA and described in report. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/process_creation/win_lethalhta.yml</info>
-   <mitre>
-     <id>T1218</id>
-     <id>T1218.005</id>
-     <id>T1170</id> <!-- an old one -->
-   </mitre>
-   <group>attack.defense_evasion, attack.execution, metron, win084,</group>
+
+  <rule id="100143" level="14">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.parentImage">\\svchost.exe</field>
+    <field name="win.eventdata.image">\\mshta.exe</field>
+    <description>MSHTA Spwaned by SVCHOST</description>
+    <info type="text">Detects MSHTA.EXE spwaned by SVCHOST as seen in LethalHTA and described in report. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/1e029b98cf74a679bcd02e8f428c43252615bdb0/rules/windows/process_creation/win_lethalhta.yml</info>
+    <mitre>
+      <id>T1218</id>
+      <id>T1218.005</id>
+      <id>T1170</id> <!-- an old one -->
+    </mitre>
+    <group>attack.defense_evasion, attack.execution, metron, win084,</group>
   </rule>
-  
+
   <rule id="100144" level="14">
-   <if_sid>100100, 61603</if_sid>
-   <field name="win.eventdata.commandLine">process \s*call \s*create</field>
-   <field name="win.eventdata.commandLine">rundll32</field>
-   <description>Suspicious WMI Execution Using Rundll32</description>
-   <info type="text">Detects WMI executing rundll32. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_wmic_proc_create_rundll32.yml</info>
-   <mitre>
-     <id>T1047</id>
-   </mitre>
-   <group>attack.execution, metron, win011,</group>
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.commandLine">process \s*call \s*create</field>
+    <field name="win.eventdata.commandLine">rundll32</field>
+    <description>Suspicious WMI Execution Using Rundll32</description>
+    <info type="text">Detects WMI executing rundll32. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_wmic_proc_create_rundll32.yml</info>
+    <mitre>
+      <id>T1047</id>
+    </mitre>
+    <group>attack.execution, metron, win011,</group>
   </rule>
-    
+
   <rule id="100145" level="14">
-   <if_group>process_creation_4688</if_group>
-   <field name="win.eventdata.newProcessName">\\regsvr32.exe</field>
-   <field name="win.eventdata.commandLine"> \s*/i:</field>
-   <description>Regsvr32 Flags Anomaly</description>
-   <info type="text">Detects a flag anomaly in which regsvr32.exe uses a /i flag without using a /n flag at the same time. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
-   <mitre>
-     <id>T1218</id>
-     <id>T1218.010</id>
-     <id>T1117</id> <!-- an old one -->
-   </mitre>
-   <group>attack.defense_evasion, metron,</group>
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\regsvr32.exe</field>
+    <field name="win.eventdata.commandLine"> \s*/i:</field>
+    <description>Regsvr32 Flags Anomaly</description>
+    <info type="text">Detects a flag anomaly in which regsvr32.exe uses a /i flag without using a /n flag at the same time. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
+    <mitre>
+      <id>T1218</id>
+      <id>T1218.010</id>
+      <id>T1117</id> <!-- an old one -->
+    </mitre>
+    <group>attack.defense_evasion, metron,</group>
   </rule>
-  
-  <rule id="100146" level="14"> <!-- дублирование правила для Sysmon -->
-   <if_group>sysmon_event1</if_group>
-   <field name="win.eventdata.image">\\regsvr32.exe</field>
-   <field name="win.eventdata.commandLine"> \s*/i:</field>
-   <description>Regsvr32 Flags Anomaly</description>
-   <info type="text">Detects a flag anomaly in which regsvr32.exe uses a /i flag without using a /n flag at the same time. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
-   <mitre>
-     <id>T1218</id>
-     <id>T1218.010</id>
-     <id>T1117</id> <!-- an old one -->
-   </mitre>
-   <group>attack.defense_evasion, metron,</group>
+
+  <rule id="100146" level="14">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\regsvr32.exe</field>
+    <field name="win.eventdata.commandLine"> \s*/i:</field>
+    <description>Regsvr32 Flags Anomaly</description>
+    <info type="text">Detects a flag anomaly in which regsvr32.exe uses a /i flag without using a /n flag at the same time. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
+    <mitre>
+      <id>T1218</id>
+      <id>T1218.010</id>
+      <id>T1117</id> <!-- an old one -->
+    </mitre>
+    <group>attack.defense_evasion, metron,</group>
   </rule>
-  
+
   <!-- исключение -->
-  
+
   <rule id="100147" level="0">
-   <if_sid>100145, 100146</if_sid>
-   <field name="win.eventdata.commandLine"> \s*/n \s*</field>
-   <description>Regsvr32 Flags Anomaly exception</description>
-   <info type="text">Exception. </info>
-   <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
-   <group>attack.defense_evasion, metron,</group>
+    <if_sid>100145, 100146</if_sid>
+    <field name="win.eventdata.commandLine"> \s*/n \s*</field>
+    <description>Regsvr32 Flags Anomaly exception</description>
+    <info type="text">Exception. </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/a08571be9107d1c0e216400ffbb89c394fcd2570/rules/windows/process_creation/win_susp_regsvr32_flags_anomaly.yml</info>
+    <group>attack.defense_evasion, metron,</group>
+  </rule>
+
+  <rule id="100148" level="14">
+    <if_group>process_creation_4688</if_group>
+    <field name="win.eventdata.newProcessName">\\CreateMiniDump.exe</field>
+    <description>CreateMiniDump Hacktool</description>
+    <info type="text">Detects the use of CreateMiniDump hack tool used to dump the LSASS process memory for credential extraction on the attacker's machine </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+    <group>attack.credential_access, metron, win009.3,</group>
+  </rule>
+
+  <rule id="100149" level="14">
+    <!-- дублирование правила для Sysmon -->
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.image">\\CreateMiniDump.exe</field>
+    <description>CreateMiniDump Hacktool</description>
+    <info type="text">Detects the use of CreateMiniDump hack tool used to dump the LSASS process memory for credential extraction on the attacker's machine </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+    <group>attack.credential_access, metron, win009.3,</group>
+  </rule>
+
+  <rule id="100150" level="14">
+    <!-- [хешей в 4688 нет , так что пока так только для сислога будет работать ] -->
+    <if_sid>100100, 61603</if_sid>
+    <field name="win.eventdata.hashes">IMPHASH=4A07F944A83E8A7C2525EFA35DD30E2F</field>
+    <description>CreateMiniDump Hacktool</description>
+    <info type="text">Detects the use of CreateMiniDump hack tool used to dump the LSASS process memory for credential extraction on the attacker's machine </info>
+    <info type="link">https://github.com/SigmaHQ/sigma/blob/master/rules/windows/process_creation/win_hktl_createminidump.yml</info>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+    <group>attack.credential_access, metron, win009.3,</group>
   </rule>
 </group> 

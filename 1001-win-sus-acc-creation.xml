@@ -80,7 +80,7 @@
         <info type="text">which could be legitimate activity or a sign of privilege escalation activity</info>
         <field name="win.system.eventID">4732</field>
         <field name="win.eventdata.groupname">Administrators</field>
-        <field name="win.eventdata.subjectusername">*$</field>
+        <field name="win.eventdata.subjectusername">!*\$</field>
         <description>User Added to Local Administrators</description>
         <mitre>
             <id>T1078</id>
